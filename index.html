@@ -1,0 +1,974 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>دعوة زفاف | ليلة العمر</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Alexandria:wght@300;400;600;700&family=Amiri:ital,wght@0,400;0,700;1,400&family=Great+Vibes&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --cream: #FAF6F0;
+            --cream-dark: #EFE6D8;
+            --bronze: #9A7B4F;
+            --bronze-light: #C5A87E;
+            --bronze-dark: #5C4326;
+            --gold-glow: rgba(255, 236, 179, 0.95);
+            --text-dark: #3B2818;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            font-family: 'Alexandria', sans-serif;
+            background-color: var(--cream);
+            color: var(--text-dark);
+            overflow-x: hidden;
+            min-height: 100dvh;
+            background-image:
+                radial-gradient(circle at 50% 0%, rgba(197, 168, 126, 0.15) 0%, transparent 70%),
+                repeating-linear-gradient(45deg, rgba(154, 123, 79, 0.03) 0px, rgba(154, 123, 79, 0.03) 2px, transparent 2px, transparent 10px);
+        }
+
+        /* ================= 1. شاشة البوابة والـ Welcome ================= */
+        #gate-screen {
+            position: fixed;
+            inset: 0;
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            transition: opacity 1s ease, visibility 1s ease;
+        }
+
+        #gate-screen.hidden {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+        }
+
+        .heaven-light {
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle at center, #FFFFFF 0%, #FFF8E7 35%, #E8D5B7 100%);
+            opacity: 0;
+            transition: opacity 1.2s ease;
+            z-index: 1;
+        }
+
+        #gate-screen.opening .heaven-light {
+            opacity: 1;
+        }
+
+        .door {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            width: 50%;
+            background:
+                radial-gradient(circle at 50% 25%, rgba(255, 255, 255, 0.65) 0%, transparent 60%),
+                linear-gradient(135deg, #FDFBF7 0%, #EFE5D5 100%);
+            z-index: 2;
+            transition: transform 1.6s cubic-bezier(0.65, 0, 0.35, 1);
+            display: flex;
+            align-items: center;
+            overflow: hidden;
+            box-shadow: inset 0 0 40px rgba(154, 123, 79, 0.25);
+        }
+
+        .door-left {
+            left: 0;
+            border-right: 2px solid var(--bronze-light);
+            transform-origin: left center;
+            justify-content: flex-end;
+        }
+
+        .door-right {
+            right: 0;
+            border-left: 2px solid var(--bronze-light);
+            transform-origin: right center;
+            justify-content: flex-start;
+        }
+
+        .door::before {
+            content: '';
+            position: absolute;
+            top: 18px;
+            bottom: 18px;
+            width: calc(100% - 18px);
+            border: 1.5px solid var(--bronze-light);
+            pointer-events: none;
+            z-index: 2;
+        }
+        .door-left::before { left: 10px; border-right: none; border-radius: 16px 0 0 16px; }
+        .door-right::before { right: 10px; border-left: none; border-radius: 0 16px 16px 0; }
+
+        .floral-corner {
+            position: absolute;
+            width: 170px;
+            height: 170px;
+            pointer-events: none;
+            z-index: 1;
+            opacity: 0.92;
+        }
+
+        .floral-top-left { top: 8px; left: 8px; }
+        .floral-bottom-left { bottom: 8px; left: 8px; transform: scaleY(-1); }
+        .floral-top-right { top: 8px; right: 8px; transform: scaleX(-1); }
+        .floral-bottom-right { bottom: 8px; right: 8px; transform: scale(-1, -1); }
+
+        .sparkle-star {
+            position: absolute;
+            color: var(--bronze-light);
+            pointer-events: none;
+            z-index: 1;
+            animation: twinkle 3.2s infinite ease-in-out;
+        }
+
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.25; transform: scale(0.85) rotate(0deg); }
+            50% { opacity: 0.9; transform: scale(1.2) rotate(18deg); }
+        }
+
+        #gate-screen.opening .door-left {
+            transform: perspective(1200px) rotateY(105deg);
+        }
+        #gate-screen.opening .door-right {
+            transform: perspective(1200px) rotateY(-105deg);
+        }
+
+        .welcome-container {
+            position: relative;
+            z-index: 5;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            cursor: pointer;
+            transition: transform 0.7s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.6s ease;
+        }
+
+        #gate-screen.opening .welcome-container {
+            transform: scale(1.25) rotate(180deg);
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .welcome-medallion {
+            width: 175px;
+            height: 175px;
+            border-radius: 50%;
+            background: radial-gradient(circle at 30% 30%, #FFFFFF 0%, #FAF3E6 65%, #E6D2B2 100%);
+            border: 3px solid var(--bronze);
+            box-shadow:
+                0 14px 35px rgba(92, 67, 38, 0.28),
+                0 0 0 8px rgba(250, 246, 240, 0.88),
+                inset 0 0 18px rgba(197, 168, 126, 0.35);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            animation: pulseGlow 2.4s infinite ease-in-out;
+            transition: transform 0.4s ease;
+        }
+
+        .welcome-medallion::before {
+            content: '';
+            position: absolute;
+            inset: 8px;
+            border-radius: 50%;
+            border: 1px dashed var(--bronze-light);
+            pointer-events: none;
+        }
+
+        .welcome-container:active .welcome-medallion {
+            transform: scale(0.95) rotate(12deg);
+        }
+
+        @keyframes pulseGlow {
+            0%, 100% { box-shadow: 0 14px 35px rgba(92, 67, 38, 0.25), 0 0 0 7px rgba(197, 168, 126, 0.32), inset 0 0 18px rgba(197, 168, 126, 0.3); transform: scale(1); }
+            50% { box-shadow: 0 18px 45px rgba(154, 123, 79, 0.45), 0 0 0 15px rgba(197, 168, 126, 0.14), inset 0 0 22px rgba(197, 168, 126, 0.45); transform: scale(1.04); }
+        }
+
+        .welcome-ornament-top {
+            font-size: 0.9rem;
+            color: var(--bronze);
+            letter-spacing: 4px;
+            margin-bottom: -4px;
+        }
+
+        .welcome-word {
+            font-family: 'Great Vibes', cursive;
+            font-size: 3.35rem;
+            font-weight: 400;
+            color: var(--bronze-dark);
+            line-height: 1.1;
+            text-shadow: 0 2px 6px rgba(154, 123, 79, 0.22);
+            direction: ltr;
+            padding: 0 8px;
+        }
+
+        .welcome-ornament-bottom {
+            font-size: 0.75rem;
+            color: var(--bronze);
+            letter-spacing: 3px;
+            margin-top: 2px;
+        }
+
+        .gate-hint {
+            margin-top: 20px;
+            background: rgba(255, 253, 249, 0.94);
+            padding: 8px 22px;
+            border-radius: 30px;
+            border: 1px solid var(--bronze-light);
+            font-size: 0.92rem;
+            color: var(--bronze-dark);
+            font-weight: 600;
+            box-shadow: 0 4px 15px rgba(92, 67, 38, 0.1);
+        }
+
+        /* ================= الصفحات المتتالية ================= */
+        .page-section {
+            display: none;
+            min-height: 100dvh;
+            width: 100%;
+            max-width: 500px;
+            margin: 0 auto;
+            padding: 24px 18px;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            animation: fadeIn 0.8s ease forwards;
+        }
+
+        .page-section.active {
+            display: flex;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ================= 2. قسم الفيديو ================= */
+        #video-section {
+            padding: 0;
+            max-width: 100%;
+            position: relative;
+            justify-content: center;
+        }
+
+        .video-wrapper {
+            position: relative;
+            width: 100%;
+            height: 100dvh;
+            border-radius: 0;
+            border: none;
+            box-shadow: none;
+            background: #000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        video {
+            width: 100%;
+            height: 100%;
+            max-height: 100dvh;
+            display: block;
+            object-fit: cover;
+        }
+
+        /* ================= الأزرار والكروت ================= */
+        .card {
+            background: rgba(255, 253, 249, 0.95);
+            border: 1.5px solid var(--bronze-light);
+            border-radius: 24px;
+            padding: 32px 22px;
+            width: 100%;
+            text-align: center;
+            box-shadow: 0 12px 35px rgba(92, 67, 38, 0.12);
+            position: relative;
+        }
+
+        .card::after {
+            content: '';
+            position: absolute;
+            inset: 8px;
+            border: 1px dashed rgba(154, 123, 79, 0.45);
+            border-radius: 18px;
+            pointer-events: none;
+        }
+
+        .ornament {
+            font-family: 'Amiri', serif;
+            font-size: 1.6rem;
+            color: var(--bronze);
+            margin-bottom: 8px;
+        }
+
+        h2 {
+            font-family: 'Amiri', serif;
+            font-size: 1.9rem;
+            color: var(--bronze-dark);
+            margin-bottom: 12px;
+            user-select: none;
+            cursor: pointer;
+        }
+
+        p.subtitle {
+            font-size: 0.95rem;
+            line-height: 1.7;
+            color: #6B533B;
+            margin-bottom: 18px;
+        }
+
+        /* ================= تايمر العد التنازلي ================= */
+        .wedding-countdown {
+            margin: 10px auto 20px;
+            padding: 12px 14px;
+            border-radius: 16px;
+            background: rgba(139, 105, 58, 0.08);
+            border: 1px dashed rgba(139, 105, 58, 0.35);
+            text-align: center;
+            position: relative;
+            z-index: 2;
+        }
+
+        .countdown-title {
+            font-size: 13px;
+            color: #6f532b;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+
+        .countdown-grid {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+        }
+
+        .countdown-box {
+            min-width: 84px;
+            padding: 8px 12px;
+            border-radius: 12px;
+            background: #fffdf9;
+            border: 1px solid rgba(139, 105, 58, 0.25);
+            box-shadow: 0 3px 10px rgba(90, 65, 30, 0.06);
+        }
+
+        .countdown-number {
+            display: block;
+            font-size: 22px;
+            font-weight: 700;
+            color: #6b4c20;
+            line-height: 1.2;
+        }
+
+        .countdown-label {
+            display: block;
+            font-size: 12px;
+            color: #8c6d41;
+            margin-top: 2px;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            width: 100%;
+            padding: 14px 22px;
+            border-radius: 50px;
+            font-family: 'Alexandria', sans-serif;
+            font-size: 1rem;
+            font-weight: 600;
+            text-decoration: none;
+            cursor: pointer;
+            border: none;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            position: relative;
+            z-index: 2;
+        }
+
+        .btn:active {
+            transform: scale(0.97);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--bronze) 0%, var(--bronze-dark) 100%);
+            color: #FFFDF9;
+            box-shadow: 0 8px 20px rgba(92, 67, 38, 0.25);
+        }
+
+        .btn-outline {
+            background: transparent;
+            color: var(--bronze-dark);
+            border: 1.5px solid var(--bronze);
+            margin-top: 12px;
+        }
+
+        /* ================= 4. قسم المباركات ================= */
+        .form-group {
+            margin-bottom: 14px;
+            text-align: right;
+            position: relative;
+            z-index: 2;
+        }
+
+        input, textarea {
+            width: 100%;
+            padding: 13px 16px;
+            border-radius: 14px;
+            border: 1.5px solid var(--bronze-light);
+            background: #FFFDF9;
+            font-family: 'Alexandria', sans-serif;
+            font-size: 0.95rem;
+            color: var(--text-dark);
+            outline: none;
+            transition: border-color 0.3s;
+        }
+
+        input:focus, textarea:focus {
+            border-color: var(--bronze-dark);
+        }
+
+        textarea {
+            resize: none;
+            height: 95px;
+        }
+
+        .wishes-list {
+            margin-top: 24px;
+            width: 100%;
+            max-height: 280px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            text-align: right;
+            position: relative;
+            z-index: 2;
+        }
+
+        .wish-item {
+            background: var(--cream);
+            border: 1px solid rgba(197, 168, 126, 0.5);
+            border-radius: 14px;
+            padding: 12px 15px;
+        }
+
+        .wish-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 4px;
+        }
+
+        .wish-author {
+            font-weight: 700;
+            font-size: 0.9rem;
+            color: var(--bronze-dark);
+        }
+
+        .delete-btn {
+            display: none;
+            background: #8B261D;
+            color: #FFFDF9;
+            border: none;
+            border-radius: 8px;
+            padding: 3px 9px;
+            font-family: 'Alexandria', sans-serif;
+            font-size: 0.75rem;
+            cursor: pointer;
+        }
+
+        body.admin-mode .delete-btn {
+            display: inline-block;
+        }
+
+        .admin-badge {
+            display: none;
+            font-size: 0.78rem;
+            color: var(--bronze-dark);
+            background: var(--cream-dark);
+            border: 1px solid var(--bronze-light);
+            padding: 4px 10px;
+            border-radius: 12px;
+            margin-bottom: 12px;
+            position: relative;
+            z-index: 2;
+        }
+
+        body.admin-mode .admin-badge {
+            display: inline-block;
+        }
+
+        .wish-text {
+            font-size: 0.88rem;
+            color: #523D28;
+            line-height: 1.6;
+        }
+
+        .nav-back {
+            margin-top: 16px;
+            font-size: 0.85rem;
+            color: var(--bronze);
+            background: none;
+            border: none;
+            cursor: pointer;
+            text-decoration: underline;
+            position: relative;
+            z-index: 2;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 1. شاشة البوابة والـ Welcome المزخرفة -->
+    <div id="gate-screen">
+        <div class="heaven-light"></div>
+
+        <div class="door door-left">
+            <svg class="floral-corner floral-top-left" viewBox="0 0 200 200" fill="none">
+                <path d="M12 165 C28 105, 75 45, 165 18" stroke="#8F9E78" stroke-width="2.5" stroke-linecap="round"/>
+                <path d="M45 108 C22 102, 16 84, 34 78 C46 86, 48 98, 45 108 Z" fill="#A6B48E"/>
+                <path d="M78 72 C74 48, 92 36, 104 52 C98 66, 86 70, 78 72 Z" fill="#95A57C"/>
+                <path d="M115 44 C112 22, 130 14, 140 28 C132 40, 122 43, 115 44 Z" fill="#A6B48E"/>
+                <path d="M62 92 C78 106, 96 98, 90 82 C78 80, 68 85, 62 92 Z" fill="#B5C29E"/>
+                <g transform="translate(52, 95)">
+                    <circle cx="0" cy="-12" r="11" fill="#FFFFFF" stroke="#E5D5BE" stroke-width="1"/>
+                    <circle cx="11" cy="-4" r="11" fill="#FFFDF9" stroke="#E5D5BE" stroke-width="1"/>
+                    <circle cx="7" cy="10" r="11" fill="#FFFFFF" stroke="#E5D5BE" stroke-width="1"/>
+                    <circle cx="-7" cy="10" r="11" fill="#FFFDF9" stroke="#E5D5BE" stroke-width="1"/>
+                    <circle cx="-11" cy="-4" r="11" fill="#FFFFFF" stroke="#E5D5BE" stroke-width="1"/>
+                    <circle cx="0" cy="0" r="7" fill="#F6E6C8"/>
+                    <circle cx="0" cy="0" r="3" fill="#C5A87E"/>
+                </g>
+                <g transform="translate(105, 48) scale(0.78)">
+                    <circle cx="0" cy="-12" r="11" fill="#FFFFFF" stroke="#E5D5BE" stroke-width="1"/>
+                    <circle cx="11" cy="-4" r="11" fill="#FFFDF9" stroke="#E5D5BE" stroke-width="1"/>
+                    <circle cx="7" cy="10" r="11" fill="#FFFFFF" stroke="#E5D5BE" stroke-width="1"/>
+                    <circle cx="-7" cy="10" r="11" fill="#FFFDF9" stroke="#E5D5BE" stroke-width="1"/>
+                    <circle cx="-11" cy="-4" r="11" fill="#FFFFFF" stroke="#E5D5BE" stroke-width="1"/>
+                    <circle cx="0" cy="0" r="6" fill="#F6E6C8"/>
+                    <circle cx="0" cy="0" r="2.5" fill="#C5A87E"/>
+                </g>
+                <circle cx="28" cy="132" r="4.5" fill="#FFFFFF" stroke="#DFCDAE" stroke-width="1"/>
+                <circle cx="144" cy="24" r="4.5" fill="#FFFFFF" stroke="#DFCDAE" stroke-width="1"/>
+            </svg>
+
+            <svg class="floral-corner floral-bottom-left" viewBox="0 0 200 200" fill="none">
+                <path d="M12 165 C28 105, 75 45, 165 18" stroke="#8F9E78" stroke-width="2.5" stroke-linecap="round"/>
+                <path d="M45 108 C22 102, 16 84, 34 78 C46 86, 48 98, 45 108 Z" fill="#A6B48E"/>
+                <path d="M78 72 C74 48, 92 36, 104 52 C98 66, 86 70, 78 72 Z" fill="#95A57C"/>
+                <g transform="translate(56, 92) scale(0.9)">
+                    <circle cx="0" cy="-12" r="11" fill="#FFFFFF" stroke="#E5D5BE" stroke-width="1"/>
+                    <circle cx="11" cy="-4" r="11" fill="#FFFDF9" stroke="#E5D5BE" stroke-width="1"/>
+                    <circle cx="7" cy="10" r="11" fill="#FFFFFF" stroke="#E5D5BE" stroke-width="1"/>
+                    <circle cx="-7" cy="10" r="11" fill="#FFFDF9" stroke="#E5D5BE" stroke-width="1"/>
+                    <circle cx="-11" cy="-4" r="11" fill="#FFFFFF" stroke="#E5D5BE" stroke-width="1"/>
+                    <circle cx="0" cy="0" r="6" fill="#F6E6C8"/>
+                    <circle cx="0" cy="0" r="2.5" fill="#C5A87E"/>
+                </g>
+                <circle cx="118" cy="40" r="5" fill="#FFFFFF" stroke="#DFCDAE" stroke-width="1"/>
+            </svg>
+
+            <span class="sparkle-star" style="top: 24%; left: 32%; font-size: 16px; animation-delay: 0.2s;">✦</span>
+            <span class="sparkle-star" style="top: 38%; left: 58%; font-size: 12px; animation-delay: 1.1s;">✧</span>
+            <span class="sparkle-star" style="bottom: 28%; left: 36%; font-size: 15px; animation-delay: 0.7s;">✦</span>
+            <span class="sparkle-star" style="bottom: 42%; left: 62%; font-size: 11px; animation-delay: 1.8s;">✧</span>
+        </div>
+
+        <div class="door door-right">
+            <svg class="floral-corner floral-top-right" viewBox="0 0 200 200" fill="none">
+                <path d="M12 165 C28 105, 75 45, 165 18" stroke="#8F9E78" stroke-width="2.5" stroke-linecap="round"/>
+                <path d="M45 108 C22 102, 16 84, 34 78 C46 86, 48 98, 45 108 Z" fill="#A6B48E"/>
+                <path d="M78 72 C74 48, 92 36, 104 52 C98 66, 86 70, 78 72 Z" fill="#95A57C"/>
+                <path d="M115 44 C112 22, 130 14, 140 28 C132 40, 122 43, 115 44 Z" fill="#A6B48E"/>
+                <path d="M62 92 C78 106, 96 98, 90 82 C78 80, 68 85, 62 92 Z" fill="#B5C29E"/>
+                <g transform="translate(52, 95)">
+                    <circle cx="0" cy="-12" r="11" fill="#FFFFFF" stroke="#E5D5BE" stroke-width="1"/>
+                    <circle cx="11" cy="-4" r="11" fill="#FFFDF9" stroke="#E5D5BE" stroke-width="1"/>
+                    <circle cx="7" cy="10" r="11" fill="#FFFFFF" stroke="#E5D5BE" stroke-width="1"/>
+                    <circle cx="-7" cy="10" r="11" fill="#FFFDF9" stroke="#E5D5BE" stroke-width="1"/>
+                    <circle cx="-11" cy="-4" r="11" fill="#FFFFFF" stroke="#E5D5BE" stroke-width="1"/>
+                    <circle cx="0" cy="0" r="7" fill="#F6E6C8"/>
+                    <circle cx="0" cy="0" r="3" fill="#C5A87E"/>
+                </g>
+                <g transform="translate(105, 48) scale(0.78)">
+                    <circle cx="0" cy="-12" r="11" fill="#FFFFFF" stroke="#E5D5BE" stroke-width="1"/>
+                    <circle cx="11" cy="-4" r="11" fill="#FFFDF9" stroke="#E5D5BE" stroke-width="1"/>
+                    <circle cx="7" cy="10" r="11" fill="#FFFFFF" stroke="#E5D5BE" stroke-width="1"/>
+                    <circle cx="-7" cy="10" r="11" fill="#FFFDF9" stroke="#E5D5BE" stroke-width="1"/>
+                    <circle cx="-11" cy="-4" r="11" fill="#FFFFFF" stroke="#E5D5BE" stroke-width="1"/>
+                    <circle cx="0" cy="0" r="6" fill="#F6E6C8"/>
+                    <circle cx="0" cy="0" r="2.5" fill="#C5A87E"/>
+                </g>
+                <circle cx="28" cy="132" r="4.5" fill="#FFFFFF" stroke="#DFCDAE" stroke-width="1"/>
+                <circle cx="144" cy="24" r="4.5" fill="#FFFFFF" stroke="#DFCDAE" stroke-width="1"/>
+            </svg>
+
+            <svg class="floral-corner floral-bottom-right" viewBox="0 0 200 200" fill="none">
+                <path d="M12 165 C28 105, 75 45, 165 18" stroke="#8F9E78" stroke-width="2.5" stroke-linecap="round"/>
+                <path d="M45 108 C22 102, 16 84, 34 78 C46 86, 48 98, 45 108 Z" fill="#A6B48E"/>
+                <path d="M78 72 C74 48, 92 36, 104 52 C98 66, 86 70, 78 72 Z" fill="#95A57C"/>
+                <g transform="translate(56, 92) scale(0.9)">
+                    <circle cx="0" cy="-12" r="11" fill="#FFFFFF" stroke="#E5D5BE" stroke-width="1"/>
+                    <circle cx="11" cy="-4" r="11" fill="#FFFDF9" stroke="#E5D5BE" stroke-width="1"/>
+                    <circle cx="7" cy="10" r="11" fill="#FFFFFF" stroke="#E5D5BE" stroke-width="1"/>
+                    <circle cx="-7" cy="10" r="11" fill="#FFFDF9" stroke="#E5D5BE" stroke-width="1"/>
+                    <circle cx="-11" cy="-4" r="11" fill="#FFFFFF" stroke="#E5D5BE" stroke-width="1"/>
+                    <circle cx="0" cy="0" r="6" fill="#F6E6C8"/>
+                    <circle cx="0" cy="0" r="2.5" fill="#C5A87E"/>
+                </g>
+                <circle cx="118" cy="40" r="5" fill="#FFFFFF" stroke="#DFCDAE" stroke-width="1"/>
+            </svg>
+
+            <span class="sparkle-star" style="top: 24%; right: 32%; font-size: 16px; animation-delay: 0.5s;">✦</span>
+            <span class="sparkle-star" style="top: 38%; right: 58%; font-size: 12px; animation-delay: 1.4s;">✧</span>
+            <span class="sparkle-star" style="bottom: 28%; right: 36%; font-size: 15px; animation-delay: 0.9s;">✦</span>
+            <span class="sparkle-star" style="bottom: 42%; right: 62%; font-size: 11px; animation-delay: 2.1s;">✧</span>
+        </div>
+
+        <div class="welcome-container" onclick="openGate()">
+            <div class="welcome-medallion">
+                <span class="welcome-ornament-top">✦ ❦ ✦</span>
+                <span class="welcome-word">Welcome</span>
+                <span class="welcome-ornament-bottom">❖ ❖</span>
+            </div>
+            <div class="gate-hint">اضغط لفتح الدعوة</div>
+        </div>
+    </div>
+
+    <!-- 2. صفحة الفيديو -->
+    <section id="video-section" class="page-section">
+        <div class="video-wrapper">
+            <video id="wedding-video" src="invitation.mp4" playsinline webkit-playsinline style="cursor: pointer;"></video>
+        </div>
+    </section>
+
+    <!-- 3. صفحة اللوكيشن -->
+    <section id="location-section" class="page-section">
+        <div class="card">
+            <div class="ornament">✦ ❖ ✦</div>
+            <h2>موقع الحفل</h2>
+            <p class="subtitle">يسعدنا تشريفكم ومشاركتكم فرحتنا.<br>يمكنكم الوصول إلى مكان الحفل مباشرة عبر الخريطة:</p>
+
+            <div class="wedding-countdown" id="wedding-countdown">
+                <div class="countdown-title">متبقي على يوم الفرح</div>
+                <div class="countdown-grid">
+                    <div class="countdown-box">
+                        <span class="countdown-number" id="cd-days">00</span>
+                        <span class="countdown-label">يوم</span>
+                    </div>
+                    <div class="countdown-box">
+                        <span class="countdown-number" id="cd-hours">00</span>
+                        <span class="countdown-label">ساعة</span>
+                    </div>
+                </div>
+            </div>
+
+            <a href="https://maps.app.goo.gl/FaLNuKbMAJRZZWgd6" target="_blank" rel="noopener" class="btn btn-primary">
+                <span>افتح الموقع على Google Maps</span>
+                <span>📍</span>
+            </a>
+
+            <button class="btn btn-outline" onclick="goToSection('wishes-section')">
+                <span>اترك لنا مباركة أو كلمة حلوة</span>
+                <span>💌</span>
+            </button>
+
+            <button class="nav-back" onclick="replayVideo()">إعادة مشاهدة الدعوة ↺</button>
+        </div>
+    </section>
+
+    <!-- 4. صفحة المباركات والرسائل -->
+    <section id="wishes-section" class="page-section">
+        <div class="card">
+            <div class="ornament">❦</div>
+            <h2 id="wishes-title" title="اضغط ضغطة مطولة لفتح وضع الإدارة">دفتر التهاني</h2>
+            <div id="admin-badge" class="admin-badge">وضع الإدارة مفعّل • <button type="button" onclick="exitAdmin()" style="background:none;border:none;color:inherit;text-decoration:underline;cursor:pointer;font-family:inherit;">خروج</button></div>
+            <p class="subtitle">سيبوا لنا ذكرى وكلمة حلوة من القلب تفضل معانا العمر كله</p>
+
+            <form id="wish-form" onsubmit="submitWish(event)">
+                <div class="form-group">
+                    <input type="text" id="guest-name" placeholder="اسمك الكريم..." required maxlength="50">
+                </div>
+                <div class="form-group">
+                    <textarea id="guest-message" placeholder="اكتب مباركتك أو دعوة حلوة للعروسين..." required maxlength="300"></textarea>
+                </div>
+                <button type="submit" id="submit-btn" class="btn btn-primary">إرسال المباركة ✨</button>
+            </form>
+
+            <div class="wishes-list" id="wishes-list"></div>
+
+            <button class="nav-back" onclick="goToSection('location-section')">→ الرجوع لصفحة الموقع</button>
+        </div>
+    </section>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+        import { getFirestore, collection, addDoc, deleteDoc, doc, query, orderBy, onSnapshot, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+        // ⚠️ باسورد الإدارة الخاص بالحذف
+        const ADMIN_PASS = "shehab2026";
+        let isAdmin = false;
+
+        // ⚠️ ضع بيانات مشروع Firebase الخاص بك هنا لكي تُحفظ الرسائل أونلاين
+const firebaseConfig = {
+    apiKey: "AIzaSyBEihlzWVAMA0PxHXhKrRcw7RNN5JRY2NU",
+    authDomain: "shehab-shrook-wedding.firebaseapp.com",
+    projectId: "shehab-shrook-wedding",
+    storageBucket: "shehab-shrook-wedding.firebasestorage.app",
+    messagingSenderId: "163138625202",
+    appId: "1:163138625202:web:c596fb54606f2e9683f3ab"
+};
+
+        let db = null;
+        let currentWishes = [];
+
+        try {
+            if (firebaseConfig.apiKey !== "YOUR_API_KEY") {
+                const app = initializeApp(firebaseConfig);
+                db = getFirestore(app);
+                listenToWishes();
+            } else {
+                loadLocalWishes();
+            }
+        } catch (e) {
+            console.error("Firebase init error:", e);
+            loadLocalWishes();
+        }
+
+        function listenToWishes() {
+            const q = query(collection(db, "wedding_wishes"), orderBy("createdAt", "desc"));
+            onSnapshot(q, (snapshot) => {
+                currentWishes = snapshot.docs.map(d => ({
+                    id: d.id,
+                    name: d.data().name || "",
+                    message: d.data().message || ""
+                }));
+                renderAllWishes();
+            });
+        }
+
+        function loadLocalWishes() {
+            const saved = JSON.parse(localStorage.getItem("wedding_wishes") || "[]");
+            currentWishes = saved.map((item, index) => ({
+                id: item.id || ("local_" + index),
+                name: item.name,
+                message: item.message
+            }));
+            renderAllWishes();
+        }
+
+        function renderAllWishes() {
+            const list = document.getElementById("wishes-list");
+            list.innerHTML = "";
+            currentWishes.forEach(item => {
+                const div = document.createElement("div");
+                div.className = "wish-item";
+                div.innerHTML = `
+                    <div class="wish-header">
+                        <div class="wish-author">${escapeHtml(item.name)}</div>
+                        <button type="button" class="delete-btn" onclick="deleteWish('${escapeHtml(item.id)}')">حذف</button>
+                    </div>
+                    <div class="wish-text">${escapeHtml(item.message)}</div>
+                `;
+                list.appendChild(div);
+            });
+        }
+
+        window.deleteWish = async function(id) {
+            if (!isAdmin) return;
+            if (!confirm("هل أنت متأكد من حذف هذه المباركة؟")) return;
+
+            try {
+                if (db && !id.startsWith("local_")) {
+                    await deleteDoc(doc(db, "wedding_wishes", id));
+                } else {
+                    const saved = JSON.parse(localStorage.getItem("wedding_wishes") || "[]");
+                    const filtered = saved.filter((item, idx) => (item.id || ("local_" + idx)) !== id);
+                    localStorage.setItem("wedding_wishes", JSON.stringify(filtered));
+                    loadLocalWishes();
+                }
+            } catch (err) {
+                alert("تعذر حذف الرسالة.");
+            }
+        };
+
+        const titleEl = document.getElementById("wishes-title");
+        let pressTimer = null;
+
+        function promptAdmin() {
+            if (isAdmin) return;
+            const pass = prompt("أدخل كلمة سر الإدارة:");
+            if (pass === ADMIN_PASS) {
+                isAdmin = true;
+                document.body.classList.add("admin-mode");
+                alert("تم تفعيل وضع الإدارة");
+            } else if (pass !== null) {
+                alert("كلمة السر غير صحيحة");
+            }
+        }
+
+        window.exitAdmin = function() {
+            isAdmin = false;
+            document.body.classList.remove("admin-mode");
+        };
+
+        if (titleEl) {
+            titleEl.addEventListener("pointerdown", () => {
+                pressTimer = setTimeout(promptAdmin, 800);
+            });
+            titleEl.addEventListener("pointerup", () => clearTimeout(pressTimer));
+            titleEl.addEventListener("pointerleave", () => clearTimeout(pressTimer));
+            titleEl.addEventListener("contextmenu", (e) => {
+                e.preventDefault();
+                promptAdmin();
+            });
+        }
+
+        window.submitWish = async function(e) {
+            e.preventDefault();
+            const nameInput = document.getElementById("guest-name");
+            const msgInput = document.getElementById("guest-message");
+            const submitBtn = document.getElementById("submit-btn");
+
+            const name = nameInput.value.trim();
+            const message = msgInput.value.trim();
+            if (!name || !message) return;
+
+            submitBtn.disabled = true;
+            submitBtn.textContent = "جاري الإرسال...";
+
+            try {
+                if (db) {
+                    await addDoc(collection(db, "wedding_wishes"), {
+                        name,
+                        message,
+                        createdAt: serverTimestamp()
+                    });
+                } else {
+                    const saved = JSON.parse(localStorage.getItem("wedding_wishes") || "[]");
+                    saved.unshift({ id: "local_" + Date.now(), name, message });
+                    localStorage.setItem("wedding_wishes", JSON.stringify(saved));
+                    loadLocalWishes();
+                }
+                nameInput.value = "";
+                msgInput.value = "";
+                alert("شكراً لك! تم إرسال مباركتك بنجاح");
+            } catch (err) {
+                alert("حدث خطأ أثناء الإرسال، حاول مرة أخرى.");
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.textContent = "إرسال المباركة ✨";
+            }
+        };
+
+        function escapeHtml(text) {
+            const div = document.createElement("div");
+            div.textContent = text;
+            return div.innerHTML;
+        }
+    </script>
+
+    <script>
+        const video = document.getElementById('wedding-video');
+
+        window.toggleVideoPlay = function () {
+            if (!video) return;
+            if (video.paused || video.ended) {
+                video.muted = false;
+                video.play().catch(() => {});
+            } else {
+                video.pause();
+            }
+        };
+
+        if (video) {
+            video.addEventListener('click', () => {
+                window.toggleVideoPlay();
+            });
+
+            video.addEventListener('ended', () => {
+                setTimeout(() => {
+                    goToSection('location-section');
+                }, 600);
+            });
+        }
+
+        function openGate() {
+            const gate = document.getElementById('gate-screen');
+            gate.classList.add('opening');
+            goToSection('video-section');
+            if (video) {
+                video.currentTime = 0;
+                video.play().catch(() => {
+                    video.muted = true;
+                    video.play().catch(() => {});
+                });
+            }
+            setTimeout(() => {
+                gate.classList.add('hidden');
+            }, 1500);
+        }
+
+        function goToSection(sectionId) {
+            document.querySelectorAll('.page-section').forEach(sec => {
+                sec.classList.remove('active');
+            });
+            document.getElementById(sectionId).classList.add('active');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function replayVideo() {
+            goToSection('video-section');
+            if (video) {
+                video.currentTime = 0;
+                video.play();
+            }
+        }
+
+        (function startWeddingCountdown() {
+            const targetDate = new Date("2026-12-22T19:00:00").getTime();
+            const daysEl = document.getElementById("cd-days");
+            const hoursEl = document.getElementById("cd-hours");
+            const containerEl = document.getElementById("wedding-countdown");
+
+            if (!daysEl || !hoursEl || !containerEl) return;
+
+            function updateCountdown() {
+                const now = Date.now();
+                const diff = targetDate - now;
+
+                if (diff <= 0) {
+                    daysEl.textContent = "0";
+                    hoursEl.textContent = "0";
+                    const title = containerEl.querySelector(".countdown-title");
+                    if (title) title.textContent = "ألف مبروك.. جه يوم الفرح!";
+                    return;
+                }
+
+                const totalHours = Math.floor(diff / (1000 * 60 * 60));
+                const days = Math.floor(totalHours / 24);
+                const hours = totalHours % 24;
+
+                daysEl.textContent = days;
+                hoursEl.textContent = hours;
+            }
+
+            updateCountdown();
+            setInterval(updateCountdown, 60 * 1000);
+        })();
+    </script>
+</body>
+</html>
