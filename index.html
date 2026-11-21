@@ -446,16 +446,20 @@
         }
 
         .wishes-list {
+            display: none;
             margin-top: 24px;
             width: 100%;
             max-height: 280px;
             overflow-y: auto;
-            display: flex;
             flex-direction: column;
             gap: 12px;
             text-align: right;
             position: relative;
             z-index: 2;
+        }
+
+        body.admin-mode .wishes-list {
+            display: flex;
         }
 
         .wish-item {
@@ -716,21 +720,21 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-        import { getFirestore, collection, addDoc, deleteDoc, doc, query, orderBy, onSnapshot, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+        import { initializeFirestore, collection, addDoc, deleteDoc, doc, query, orderBy, onSnapshot, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
         // ⚠️ باسورد الإدارة الخاص بالحذف
         const ADMIN_PASS = "shehab2026";
         let isAdmin = false;
 
-        // ⚠️ ضع بيانات مشروع Firebase الخاص بك هنا لكي تُحفظ الرسائل أونلاين
-const firebaseConfig = {
-    apiKey: "AIzaSyBEihlzWVAMA0PxHXhKrRcw7RNN5JRY2NU",
-    authDomain: "shehab-shrook-wedding.firebaseapp.com",
-    projectId: "shehab-shrook-wedding",
-    storageBucket: "shehab-shrook-wedding.firebasestorage.app",
-    messagingSenderId: "163138625202",
-    appId: "1:163138625202:web:c596fb54606f2e9683f3ab"
-};
+        // ⚠️ بيانات مشروع Firebase الخاص بك
+        const firebaseConfig = {
+            apiKey: "AIzaSyBEihlzWVAMA0PxHXhKrRcw7RNN5JRY2NU",
+            authDomain: "shehab-shrook-wedding.firebaseapp.com",
+            projectId: "shehab-shrook-wedding",
+            storageBucket: "shehab-shrook-wedding.firebasestorage.app",
+            messagingSenderId: "163138625202",
+            appId: "1:163138625202:web:c596fb54606f2e9683f3ab"
+        };
 
         let db = null;
         let currentWishes = [];
@@ -738,7 +742,7 @@ const firebaseConfig = {
         try {
             if (firebaseConfig.apiKey !== "YOUR_API_KEY") {
                 const app = initializeApp(firebaseConfig);
-                db = getFirestore(app);
+                db = initializeFirestore(app, { experimentalForceLongPolling: true });
                 listenToWishes();
             } else {
                 loadLocalWishes();
@@ -756,7 +760,9 @@ const firebaseConfig = {
                     name: d.data().name || "",
                     message: d.data().message || ""
                 }));
-                renderAllWishes();
+                if (isAdmin) {
+                    renderAllWishes();
+                }
             });
         }
 
@@ -767,11 +773,14 @@ const firebaseConfig = {
                 name: item.name,
                 message: item.message
             }));
-            renderAllWishes();
+            if (isAdmin) {
+                renderAllWishes();
+            }
         }
 
         function renderAllWishes() {
             const list = document.getElementById("wishes-list");
+            if (!list) return;
             list.innerHTML = "";
             currentWishes.forEach(item => {
                 const div = document.createElement("div");
@@ -814,6 +823,7 @@ const firebaseConfig = {
             if (pass === ADMIN_PASS) {
                 isAdmin = true;
                 document.body.classList.add("admin-mode");
+                renderAllWishes();
                 alert("تم تفعيل وضع الإدارة");
             } else if (pass !== null) {
                 alert("كلمة السر غير صحيحة");
@@ -823,6 +833,8 @@ const firebaseConfig = {
         window.exitAdmin = function() {
             isAdmin = false;
             document.body.classList.remove("admin-mode");
+            const list = document.getElementById("wishes-list");
+            if (list) list.innerHTML = "";
         };
 
         if (titleEl) {
